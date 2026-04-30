@@ -52,5 +52,7 @@ ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
 write_csv(temp_data, here("temp_data.csv"))
 ```
 
-
+1in your quarto file, add the option to load the data instead of accessing from NWIS server
+2add a code chunk that plots the data (e.g. using ggplot)
+3add a code chunk that calculates some summary statistics (e.g. mean, max, min temperature for each site)
 
