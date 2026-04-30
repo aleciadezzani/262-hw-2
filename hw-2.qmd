@@ -4,11 +4,8 @@ format: html
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
 ## Running Code
+
 ```{r}
 library(tidyverse)
 library(lubridate)
@@ -21,15 +18,18 @@ When you click the **Render** button a document will be generated that includes 
 #install.packages("dataRetrieval")
 library(dataRetrieval)
 
-siteNumbers <- c("14211720", "14211010", "14166000")
-parameterCd <- "00010"  # water temperature
-startDate <- "2010-01-01"
-endDate <- "2023-12-31"
+#commenting out loading the data from NWIS and replacing with local csv load (Shey)
 
-temp_data <- readNWISdv(siteNumbers, parameterCd, startDate, endDate)
+#siteNumbers <- c("14211720", "14211010", "14166000")
+#parameterCd <- "00010"  # water temperature
+#startDate <- "2010-01-01"
+#endDate <- "2023-12-31"
+
+#temp_data <- readNWISdv(siteNumbers, parameterCd, startDate, endDate)
+
+temp_data <- read.csv(here("temp_data.csv"))
+
 ```
-
-
 
 ```{r}
 # rename columns for clarity
@@ -52,7 +52,9 @@ ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
 write_csv(temp_data, here("temp_data.csv"))
 ```
 
-1in your quarto file, add the option to load the data instead of accessing from NWIS server
-2add a code chunk that plots the data (e.g. using ggplot)
-3add a code chunk that calculates some summary statistics (e.g. mean, max, min temperature for each site)
 
+1in your quarto file, add the option to load the data instead of accessing from NWIS server (completed -Shey)
+
+2add a code chunk that plots the data (e.g. using ggplot) 
+
+3add a code chunk that calculates some summary statistics (e.g. mean, max, min temperature for each site)
