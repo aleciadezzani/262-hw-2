@@ -10,6 +10,7 @@ editor: visual
 library(tidyverse)
 library(lubridate)
 library(here)
+library(ggplot2)
 ```
 
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
@@ -56,5 +57,24 @@ write_csv(temp_data, here("temp_data.csv"))
 1in your quarto file, add the option to load the data instead of accessing from NWIS server (completed -Shey)
 
 2add a code chunk that plots the data (e.g. using ggplot) 
+```{r data plot}
+
+library(ggplot2)
+
+ggplot(temp_data, aes(x = month, y = year, fill = temp_C)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  scale_fill_distiller(palette = "Blues", name = "Temp (C)") +
+  labs(
+    title = "Monthly Temperature Heatmap",
+    x = "Month",
+    y = "Year",
+    fill = "Temperature (C)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 11),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+```
 
 3add a code chunk that calculates some summary statistics (e.g. mean, max, min temperature for each site)
