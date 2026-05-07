@@ -19,6 +19,7 @@ library(here)
 library(ggplot2)
 library(jtools)
 library(knitr)
+library(kableExtra)
 ```
 
 
@@ -28,25 +29,22 @@ library(knitr)
 library(dataRetrieval)
 
 #commenting out loading the data from NWIS 
-#siteNumbers <- c("14211720", "14211010", "14166000")
-#parameterCd <- "00010"  # water temperature
-#startDate <- "2010-01-01"
-#endDate <- "2023-12-31"
+siteNumbers <- c("14211720", "14211010", "14166000")
+parameterCd <- "00010"  # water temperature
+startDate <- "2010-01-01"
+endDate <- "2023-12-31"
 
-#temp_data <- readNWISdv(siteNumbers, parameterCd, startDate, endDate)
+temp_data <- readNWISdv(siteNumbers, parameterCd, startDate, endDate)
 
 ```
 
 ```{r}
 # rename columns for clarity
-#colnames(temp_data) <- c("agency_cd", "site_no", "Date", "temp_C")
+colnames(temp_data) <- c("agency_cd", "site_no", "Date", "temp_C")
 
 # extract some date info for use later
-#temp_data$month = month(temp_data$Date, label=TRUE)
-#temp_data$year = year(temp_data$Date)
-
-#local data load
-temp_data <- read.csv(here("temp_data.csv"))
+temp_data$month = month(temp_data$Date, label=TRUE)
+temp_data$year = year(temp_data$Date)
 
 # check by plotting
 ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
@@ -59,6 +57,9 @@ ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
 ```{r}
 #save the dataframe
 write_csv(temp_data, here("temp_data.csv"))
+
+#local data load
+temp_data <- read.csv(here("temp_data.csv"))
 ```
 
 ```{r data plot}
@@ -82,7 +83,7 @@ ggplot(temp_data, aes(x = month, y = year, fill = temp_C)) +
 ```
 
 ```{r}
-#3. add a code chunk that calculates some summary statistics (e.g. mean, max, min temperature for each site)
+#3. Summary statistics (e.g. mean, max, min temperature for each site)
 
 temp_summary_stats<- temp_data |> group_by(site_no) |> summarize(mean_temp = mean(temp_C), max_temp = max(temp_C), min_temp = min(temp_C)) |> ungroup()
 
