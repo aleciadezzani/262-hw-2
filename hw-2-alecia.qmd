@@ -1,0 +1,85 @@
+---
+title: "Homework 2"
+format: html
+editor: visual
+author: Shey Dorji, Alecia Dezzani
+theme: lux
+---
+
+## Getting Started: Data & Packages
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(jtools)
+library(knitr)
+library(kableExtra)
+library(janitor)
+library(geomtextpath)
+```
+
+
+
+```{r}
+#install.packages("dataRetrieval")
+library(dataRetrieval)
+
+#commenting out loading the data from NWIS 
+#siteNumbers <- c("14211720", "14211010", "14166000")
+#parameterCd <- "00010"  # water temperature
+#startDate <- "2010-01-01"
+#endDate <- "2023-12-31"
+
+#temp_data <- readNWISdv(siteNumbers, parameterCd, startDate, endDate)
+
+```
+
+```{r}
+# rename columns for clarity
+#colnames(temp_data) <- c("agency_cd", "site_no", "Date", "temp_C")
+
+# extract some date info for use later
+#temp_data$month = month(temp_data$Date, label=TRUE)
+#temp_data$year = year(temp_data$Date)
+
+# check by plotting
+#ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
+  #geom_line() +
+  #labs(title="Stream Temperature at Willamette River Sites",
+      # x="Date", y="Temperature (°C)", color="Site Number") +
+  #theme_minimal()
+```
+
+```{r}
+#save the dataframe
+#write_csv(temp_data, here("temp_data.csv"))
+
+#local data load
+temp_data <- read.csv(here("temp_data.csv"))
+```
+
+```{r data plot}
+
+#2. Plot the data
+
+ggplot(temp_data, aes(x = month, y = year, fill = temp_C)summ) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  scale_fill_distiller(palette = "Blues", name = "Temp (C)") +
+  labs(
+    title = "Monthly Temperature Heatmap",
+    x = "Month",
+    y = "Year",
+    fill = "Temperature (C)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 11),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+```
