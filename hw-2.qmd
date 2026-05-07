@@ -82,3 +82,10 @@ ggplot(temp_data, aes(x = month, y = year, fill = temp_C)) +
 ```
 
 3add a code chunk that calculates some summary statistics (e.g. mean, max, min temperature for each site)
+```{r}
+
+
+
+
+```
+
