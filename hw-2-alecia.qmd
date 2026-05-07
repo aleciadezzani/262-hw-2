@@ -24,63 +24,149 @@ library(janitor)
 library(geomtextpath)
 ```
 
-
-
 ```{r}
 #install.packages("dataRetrieval")
-library(dataRetrieval)
+#library(dataRetrieval)
 
 #commenting out loading the data from NWIS 
-siteNumbers <- c("14211720", "14211010", "14166000")
-parameterCd <- "00010"  # water temperature
-startDate <- "2010-01-01"
-endDate <- "2023-12-31"
+#siteNumbers <- c("14211720", "14211010", "14166000")
+#parameterCd <- "00010"  # water temperature
+#startDate <- "2010-01-01"
+#endDate <- "2023-12-31"
 
-temp_data <- readNWISdv(siteNumbers, parameterCd, startDate, endDate)
+#temp_data <- readNWISdv(siteNumbers, parameterCd, startDate, endDate)
 
 ```
 
+#### Generating Data
 ```{r}
 # rename columns for clarity
-colnames(temp_data) <- c("agency_cd", "site_no", "Date", "temp_C")
+#colnames(temp_data) <- c("agency_cd", "site_no", "Date", "temp_C")
 
 # extract some date info for use later
-temp_data$month = month(temp_data$Date, label=TRUE)
-temp_data$year = year(temp_data$Date)
+#temp_data$month = month(temp_data$Date, label=TRUE)
+#temp_data$year = year(temp_data$Date)
 
 # check by plotting
-ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
-  geom_line() +
-  labs(title="Stream Temperature at Willamette River Sites",
-       x="Date", y="Temperature (°C)", color="Site Number") +
-  theme_minimal()
+#ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
+  #geom_line() +
+  #labs(title="Stream Temperature at Willamette River Sites",
+      # x="Date", y="Temperature (°C)", color="Site Number") +
+  #theme_minimal()
 ```
 
+#### Save & Load Data Frame
 ```{r}
 #save the dataframe
-write_csv(temp_data, here("temp_data_final.csv"))
+#write_csv(temp_data, here("temp_data.csv"))
 
 #local data load
 temp_data_final <- read.csv(here("temp_data_final.csv"))
 ```
 
+## Plot All Water Temperature Data
 ```{r data plot}
 
-#2. Plot the data
-
-# rename columns for clarity
-colnames(temp_data_final) <- c("agency_cd", "site_no", "Date", "temp_C")
-# extract some date info for use later
-temp_data_final$month = month(temp_data$Date, label=TRUE)
-temp_data_final$year = year(temp_data$Date)
-# check by plotting
-ggplot(temp_data_final, aes(x=Date, y=temp_C, color=site_no)) +
-geom_line() +
-labs(title="Stream Temperature at Willamette River Sites",
-x="Date", y="Temperature (°C)", color="Site Number") +
-theme_minimal()
-
+ggplot(temp_data_final, aes(x = month, y = year, fill = temp_C)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  scale_fill_distiller(palette = "Blues", name = "Temp (C)") +
+  labs(
+    title = "Monthly Temperature Heatmap",
+    x = "Month",
+    y = "Year",
+    fill = "Temperature (C)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 11),
+    plot.title = element_text(face = "bold", size = 14)
+  )
 ```
 
+## Part I: Analysis of **August** Water Temperatures Over Time
 
+### a) Is there a trend in temperature in the month of August?
+```{r}
+# get data for August
+aug_data <- temp_data_final |> 
+  clean_names() |>
+  filter(month == "Aug")
 
+# is there a trend between year and temperature? Is the temperature changing over time?
+aug_lm <- lm(temp_c ~ year, data = aug_data)
+summ(aug_lm, digits = 4)
+```
+
+Yes, there is a significant relationship between the year and the water temperature in August.
+The p-value of the coefficient `year` is 0.0000 which is less than our alpha threshold of 0.05.
+
+### b) Is the trend positive (increasing) or negative (decreasing)?
+```{r}
+aug_plot <- ggplot(aug_data, aes(x = year, y = temp_c, color = as.factor(year))) +
+  theme_bw() +
+  geom_jitter() +
+  geom_smooth(aes(group = 1),
+              method = "lm",
+              se = FALSE,
+              color = "black") +
+  labs(title = "August Recorded Water Temperature for all sites",
+       x = "Year",
+       y = "Temp (deg C)",
+       color = "Year")
+  
+aug_plot
+```
+
+Based on the plot above and the regression coefficient = 0.1512, the linear regression estimates that the August water temperature is increasing by 0.1512 degrees Celsius every year. However, this linear model has an R^2^ = 0.0804; therefore, only 8% of the variation in temperature can be attributed to a difference in year. Therefore, the year may not be the best tool to predict change in water temperature. 
+
+### c) Are there different trends in each site?
+```{r}
+# OLS regression for Site 14211720
+aug_1720 <- aug_data |>
+  filter(site_no == 14211720)
+
+aug_1720_lm <- lm(temp_c ~ year, 
+                  data = aug_1720)
+summ(aug_1720_lm, digits = 4)
+```
+```{r}
+# OLS regression for Site 14211010
+aug_1010 <- aug_data |>
+  filter(site_no == 14211010)
+
+aug_1010_lm <- lm(temp_c ~ year, 
+                  data = aug_1010)
+summ(aug_1010_lm, digits = 4)
+```
+```{r}
+# OLS regression for Site 14166000
+aug_6000 <- aug_data |>
+  filter(site_no == 14166000)
+
+aug_6000_lm <- lm(temp_c ~ year, 
+                  data = aug_6000)
+summ(aug_6000_lm, digits = 4)
+```
+
+```{r}
+aug_site_plot <- ggplot(aug_data, aes(x = year, 
+                                      y = temp_c, 
+                                      color = as.factor(site_no))) +
+  theme_bw() +
+  geom_point(size = 2, alpha = 0.5) + 
+  geom_labelsmooth(aes(label = site_no), 
+                   fill = "white",
+                method = "lm", 
+                formula = y ~ x,
+                size = 2.75, 
+                linewidth = 1, 
+                boxlinewidth = 0.4) +
+  labs(title = "August Recorded Water Temperature Trends",
+       x = "Year",
+       y = "Temp (degrees C)",
+       color = "Site") +
+  guides(color = 'none')
+
+aug_site_plot
+```
+**Yes**, there are differences in temperature trends between sites. At site 14211720, the linear model estimates that the water increases by 0.1459 degrees C per year. At site 14211010, the linear model estimates that the water increases by 0.1760 degrees C per year. At site 14166000, the linear model estimates that the water increases by 0.1297 degrees C per year. In the figure above, the 
