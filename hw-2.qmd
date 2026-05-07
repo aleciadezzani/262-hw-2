@@ -6,7 +6,7 @@ author: Shey Dorji, Alecia Dezzani
 theme: lux
 ---
 
-## Running Code
+## Getting Started: Data & Packages
 
 ```{r}
 #| message: false
