@@ -170,3 +170,66 @@ aug_site_plot <- ggplot(aug_data, aes(x = year,
 aug_site_plot
 ```
 **Yes**, there are differences in temperature trends between sites. At site 14211720, the linear model estimates that the water increases by 0.1459 degrees C per year. At site 14211010, the linear model estimates that the water increases by 0.1760 degrees C per year. At site 14166000, the linear model estimates that the water increases by 0.1297 degrees C per year. The figure above (*"August Water Temperature Trends Per Site"*) shows that each site has its own temperature trends. These results make sense, as each site likely has its own unique combination of upstream water flow, water depth, sun exposure, flow speed, et cetera. 
+
+## Management Recommendations: Seasonal Water Temperature Trends
+
+How large are the seasonal temperature differences, and do they change over time?
+```{r}
+#plot
+summary_temp_data <- temp_data_final |>
+  clean_names() |>
+  filter(month %in% c("Aug", "Dec")) |>
+  select(site_no, date, temp_c, month, year) 
+
+#calculate mean water temp per month per year 
+mean_temps <- summary_temp_data |>
+  group_by(year, month) |>
+  summarise(
+    mean_temp = mean(temp_c),
+  ) 
+mean_temps
+
+diff_temps <- mean_temps|>
+  pivot_wider(names_from = month, values_from = mean_temp) |>
+  clean_names() |>
+  mutate(temp_diff = aug - dec,
+         temp_diff = round(temp_diff, 2))
+diff_temps
+```
+
+```{r}
+# Plot seasonal temperature means
+
+mean_temps_plot <- ggplot(mean_temps, aes(x = year,
+                                          y = mean_temp,
+                                          color = as.factor(year))) + 
+  stat_summary(fun.min = min, fun.max = max, geom = "linerange", color = "grey") + 
+  geom_point(aes(shape = as.factor(month)), size = 2.5) +
+  labs(x = "Year",
+       y = "Temperature (C)",
+       title = "Mean Monthly Water Temperature (August and December)",
+       color = "Year",
+       shape = "Month") +
+  theme_minimal()
+mean_temps_plot
+```
+
+```{r}
+# plot annual difference in seasonal temperatures
+diff_plot <- ggplot(diff_temp, aes(x = year, y = temp_diff)) +
+  geom_bar(stat = "identity", width = 0.7, aes(fill = as.factor(year))) +
+  geom_text(aes(label = round(temp_diff, 2), vjust = -0.5), size = 2.2)+
+  labs(x = "Year",
+       y = "Difference in Aug-Dec Temperature (C)",
+       title = "Seasonal Difference in Water Temperature") +
+  guides(fill = "none") +
+  theme_minimal()
+
+diff_plot
+```
+```{r}
+library(patchwork)
+mean_temps_plot + diff_plot
+
+```
+
