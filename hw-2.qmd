@@ -8,7 +8,11 @@ theme: lux
 
 ## Running Code
 
-```{r load-libraries, message=FALSE, warning=FALSE}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+
 library(tidyverse)
 library(lubridate)
 library(here)
@@ -17,7 +21,7 @@ library(jtools)
 library(knitr)
 ```
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
 
 ```{r}
 #install.packages("dataRetrieval")
