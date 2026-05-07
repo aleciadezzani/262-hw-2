@@ -6,7 +6,7 @@ author: Shey Dorji, Alecia Dezzani
 theme: lux
 ---
 
-## Running Code
+## Getting Started: Data & Packages
 
 ```{r}
 #| message: false
@@ -19,7 +19,11 @@ library(here)
 library(ggplot2)
 library(jtools)
 library(knitr)
+<<<<<<< HEAD
 library(janitor)
+=======
+library(kableExtra)
+>>>>>>> 7938775ae98741d9ab37ee4a55750abf187f09ae
 ```
 
 
@@ -46,6 +50,7 @@ library(dataRetrieval)
 #temp_data$month = month(temp_data$Date, label=TRUE)
 #temp_data$year = year(temp_data$Date)
 
+<<<<<<< HEAD
 #temp_data <- temp_data |> select(-5)          # remove column 5
 
 #save the dataframe
@@ -54,17 +59,30 @@ library(dataRetrieval)
 #local data load
 temp_data <- read.csv(here("temp_data.csv"))
 
+=======
+>>>>>>> 7938775ae98741d9ab37ee4a55750abf187f09ae
 # check by plotting
-ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
-  geom_line() +
-  labs(title="Stream Temperature at Willamette River Sites",
-       x="Date", y="Temperature (°C)", color="Site Number") +
-  theme_minimal()
+#ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
+  #geom_line() +
+  #labs(title="Stream Temperature at Willamette River Sites",
+      # x="Date", y="Temperature (°C)", color="Site Number") +
+  #theme_minimal()
 ```
 
+<<<<<<< HEAD
+=======
+```{r}
+#save the dataframe
+#write_csv(temp_data, here("temp_data.csv"))
+
+#local data load
+temp_data <- read.csv(here("temp_data.csv"))
+```
+
+>>>>>>> 7938775ae98741d9ab37ee4a55750abf187f09ae
 ```{r data plot}
 
-#2. add a code chunk that plots the data
+#2. Plot the data
 
 ggplot(temp_data, aes(x = month, y = year, fill = temp_C)) +
   geom_tile(color = "white", linewidth = 0.5) +
@@ -83,7 +101,7 @@ ggplot(temp_data, aes(x = month, y = year, fill = temp_C)) +
 ```
 
 ```{r}
-#3. add a code chunk that calculates some summary statistics (e.g. mean, max, min temperature for each site)
+#3. Summary statistics (e.g. mean, max, min temperature for each site)
 
 temp_summary_stats<- temp_data |> group_by(site_no) |> summarize(mean_temp = mean(temp_C), max_temp = max(temp_C), min_temp = min(temp_C)) |> ungroup()
 
