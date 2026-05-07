@@ -1,0 +1,25 @@
+---
+title: "dec_analysis"
+author: "Shey"
+format: html
+editor: visual
+---
+
+```{r}
+
+#load data
+temp_data <- read.csv("temp_data.csv")
+
+#GLM for predicting stream temperature in December
+temp_data$temp_C <- as.numeric(temp_data$temp_C)
+temp_data$year <- as.numeric(temp_data$year)
+# filter for dec temperatures
+dec_data <- subset(temp_data, month == "Dec")
+
+# fit a GLM model to see if there is a trend in dec temperatures over time, separated by site
+dec_model <- glm(temp_C ~ year*site_no, data = dec_data)
+summary(dec_model)
+
+
+```
+
