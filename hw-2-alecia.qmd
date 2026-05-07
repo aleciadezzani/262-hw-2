@@ -161,7 +161,7 @@ aug_site_plot <- ggplot(aug_data, aes(x = year,
                 size = 2.75, 
                 linewidth = 1, 
                 boxlinewidth = 0.4) +
-  labs(title = "August Recorded Water Temperature Trends",
+  labs(title = "August Water Temperature Trends Per Site",
        x = "Year",
        y = "Temp (degrees C)",
        color = "Site") +
@@ -169,4 +169,4 @@ aug_site_plot <- ggplot(aug_data, aes(x = year,
 
 aug_site_plot
 ```
-**Yes**, there are differences in temperature trends between sites. At site 14211720, the linear model estimates that the water increases by 0.1459 degrees C per year. At site 14211010, the linear model estimates that the water increases by 0.1760 degrees C per year. At site 14166000, the linear model estimates that the water increases by 0.1297 degrees C per year. In the figure above, the 
+**Yes**, there are differences in temperature trends between sites. At site 14211720, the linear model estimates that the water increases by 0.1459 degrees C per year. At site 14211010, the linear model estimates that the water increases by 0.1760 degrees C per year. At site 14166000, the linear model estimates that the water increases by 0.1297 degrees C per year. The figure above (*"August Water Temperature Trends Per Site"*) shows that each site has its own temperature trends. These results make sense, as each site likely has its own unique combination of upstream water flow, water depth, sun exposure, flow speed, et cetera. 
