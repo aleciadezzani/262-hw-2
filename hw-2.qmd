@@ -7,13 +7,17 @@ editor: visual
 ## Running Code
 
 ```{r}
+#| message: false
+#| warning: false
+#| echo: false
+
 library(tidyverse)
 library(lubridate)
 library(here)
 library(ggplot2)
 ```
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
 
 ```{r}
 #install.packages("dataRetrieval")
@@ -59,7 +63,7 @@ write_csv(temp_data, here("temp_data.csv"))
 2add a code chunk that plots the data (e.g. using ggplot) 
 ```{r data plot}
 
-library(ggplot2)
+#library(ggplot2)
 
 ggplot(temp_data, aes(x = month, y = year, fill = temp_C)) +
   geom_tile(color = "white", linewidth = 0.5) +
