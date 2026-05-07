@@ -195,6 +195,10 @@ diff_temps <- mean_temps|>
   mutate(temp_diff = aug - dec,
          temp_diff = round(temp_diff, 2))
 diff_temps
+
+min(diff_temps$temp_diff) # equals 12.47
+mean(diff_temps$temp_diff) # equals 13.90
+max(diff_temps$temp_diff) # equals 15.42
 ```
 
 ```{r}
@@ -207,7 +211,7 @@ mean_temps_plot <- ggplot(mean_temps, aes(x = year,
   geom_point(aes(shape = as.factor(month)), size = 2.5) +
   labs(x = "Year",
        y = "Temperature (C)",
-       title = "Mean Monthly Water Temperature (August and December)",
+       title = "(A) Mean Monthly Water Temperature (August and December)",
        color = "Year",
        shape = "Month") +
   theme_minimal()
@@ -218,18 +222,16 @@ mean_temps_plot
 # plot annual difference in seasonal temperatures
 diff_plot <- ggplot(diff_temp, aes(x = year, y = temp_diff)) +
   geom_bar(stat = "identity", width = 0.7, aes(fill = as.factor(year))) +
-  geom_text(aes(label = round(temp_diff, 2), vjust = -0.5), size = 2.2)+
+  geom_text(aes(label = round(temp_diff, 2), vjust = -0.5), size = 2.8)+
   labs(x = "Year",
        y = "Difference in Aug-Dec Temperature (C)",
-       title = "Seasonal Difference in Water Temperature") +
+       title = "(B) Seasonal Difference in Water Temperature") +
   guides(fill = "none") +
   theme_minimal()
-
 diff_plot
 ```
 ```{r}
 library(patchwork)
 mean_temps_plot + diff_plot
-
 ```
-
+Figure A above shows the difference in mean water temperature between August and December annually for 14 years since 2010 through 2023. The seasonal temperature difference ranges from a 12.47 deg C to a 15.42 deg C difference with a mean of 13.90 deg C difference between August and December. For conservation planning purposes, it is reasonable to estimate that the water temperature will decrease approximately 13-14 degrees between the summer and the winter this season. In addition, Figure B plots the water temperature difference over time. There are no clear outliers, and the distribution is relatively uniform over time. Therefore, it is expected that near-term seasonal water temperature decreases will follow a similar pattern. 
