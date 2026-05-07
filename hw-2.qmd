@@ -19,6 +19,7 @@ library(here)
 library(ggplot2)
 library(jtools)
 library(knitr)
+library(janitor)
 ```
 
 
@@ -41,9 +42,14 @@ library(dataRetrieval)
 # rename columns for clarity
 #colnames(temp_data) <- c("agency_cd", "site_no", "Date", "temp_C")
 
-# extract some date info for use later
+ #extract some date info for use later
 #temp_data$month = month(temp_data$Date, label=TRUE)
 #temp_data$year = year(temp_data$Date)
+
+#temp_data <- temp_data |> select(-5)          # remove column 5
+
+#save the dataframe
+#write_csv(temp_data, here("temp_data.csv"))
 
 #local data load
 temp_data <- read.csv(here("temp_data.csv"))
@@ -54,11 +60,6 @@ ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
   labs(title="Stream Temperature at Willamette River Sites",
        x="Date", y="Temperature (°C)", color="Site Number") +
   theme_minimal()
-```
-
-```{r}
-#save the dataframe
-write_csv(temp_data, here("temp_data.csv"))
 ```
 
 ```{r data plot}
