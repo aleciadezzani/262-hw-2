@@ -6,12 +6,11 @@ author: Shey Dorji, Alecia Dezzani
 theme: lux
 ---
 
-## Getting Started: Data & Packages
+## Getting Started: Access Data & Packages
 
 ```{r}
 #| message: false
 #| warning: false
-#| echo: false
 
 library(tidyverse)
 library(lubridate)
@@ -64,7 +63,7 @@ library(geomtextpath)
 temp_data_final <- read.csv(here("temp_data_final.csv"))
 ```
 
-## Plot All Water Temperature Data
+## Plot Water Temperature Data
 ```{r data plot}
 
 ggplot(temp_data_final, aes(x = month, y = year, fill = temp_C)) +
@@ -83,9 +82,9 @@ ggplot(temp_data_final, aes(x = month, y = year, fill = temp_C)) +
   )
 ```
 
-## Part I: Analysis of **August** Water Temperatures Over Time
+## Part I: Analysis of August Water Temperatures
 
-### a) Is there a trend in temperature in the month of August?
+#### a) Is there a trend in temperature in the month of August?
 ```{r}
 # get data for August
 aug_data <- temp_data_final |> 
@@ -100,7 +99,7 @@ summ(aug_lm, digits = 4)
 Yes, there is a significant relationship between the year and the water temperature in August.
 The p-value of the coefficient `year` is 0.0000 which is less than our alpha threshold of 0.05.
 
-### b) Is the trend positive (increasing) or negative (decreasing)?
+#### b) Is the trend positive (increasing) or negative (decreasing)?
 ```{r}
 aug_plot <- ggplot(aug_data, aes(x = year, y = temp_c, color = as.factor(year))) +
   theme_bw() +
@@ -117,9 +116,9 @@ aug_plot <- ggplot(aug_data, aes(x = year, y = temp_c, color = as.factor(year)))
 aug_plot
 ```
 
-Based on the plot above and the regression coefficient = 0.1512, the linear regression estimates that the August water temperature is increasing by 0.1512 degrees Celsius every year. However, this linear model has an R^2^ = 0.0804; therefore, only 8% of the variation in temperature can be attributed to a difference in year. Therefore, the year may not be the best tool to predict change in water temperature. 
+Based on the plot above and the regression coefficient = 0.1512, the linear regression estimates that the August water temperature is increasing by 0.1512 degrees Celsius every year. However, this linear model has an R^2^ = 0.0804 and the figure shows clearly that the data is not obviously linear. Therefore, only 8% of the variation in temperature can be attributed to a difference in year, and year is not be the best variable to estimate or predict change in water temperature. 
 
-### c) Are there different trends in each site?
+#### c) Are there different trends in each site?
 ```{r}
 # OLS regression for Site 14211720
 aug_1720 <- aug_data |>
@@ -127,7 +126,7 @@ aug_1720 <- aug_data |>
 
 aug_1720_lm <- lm(temp_c ~ year, 
                   data = aug_1720)
-summ(aug_1720_lm, digits = 4)
+summ(aug_1720_lm, digits = 4, model.fit = FALSE, model.info = FALSE)
 ```
 ```{r}
 # OLS regression for Site 14211010
@@ -136,7 +135,7 @@ aug_1010 <- aug_data |>
 
 aug_1010_lm <- lm(temp_c ~ year, 
                   data = aug_1010)
-summ(aug_1010_lm, digits = 4)
+summ(aug_1010_lm, digits = 4, model.fit = FALSE, model.info = FALSE)
 ```
 ```{r}
 # OLS regression for Site 14166000
@@ -145,7 +144,7 @@ aug_6000 <- aug_data |>
 
 aug_6000_lm <- lm(temp_c ~ year, 
                   data = aug_6000)
-summ(aug_6000_lm, digits = 4)
+summ(aug_6000_lm, digits = 4, model.fit = FALSE, model.info = FALSE)
 ```
 
 ```{r}
@@ -171,11 +170,13 @@ aug_site_plot
 ```
 **Yes**, there are differences in temperature trends between sites. At site 14211720, the linear model estimates that the water increases by 0.1459 degrees C per year. At site 14211010, the linear model estimates that the water increases by 0.1760 degrees C per year. At site 14166000, the linear model estimates that the water increases by 0.1297 degrees C per year. The figure above (*"August Water Temperature Trends Per Site"*) shows that each site has its own temperature trends. These results make sense, as each site likely has its own unique combination of upstream water flow, water depth, sun exposure, flow speed, et cetera. 
 
-## Management Recommendations: Seasonal Water Temperature Trends
+## Management Recommendations: Seasonal Water Temperature Changes
 
 How large are the seasonal temperature differences, and do they change over time?
 ```{r}
-#plot
+#|message: false
+
+#get data for August and December
 summary_temp_data <- temp_data_final |>
   clean_names() |>
   filter(month %in% c("Aug", "Dec")) |>
@@ -220,7 +221,7 @@ mean_temps_plot
 
 ```{r}
 # plot annual difference in seasonal temperatures
-diff_plot <- ggplot(diff_temp, aes(x = year, y = temp_diff)) +
+diff_plot <- ggplot(diff_temps, aes(x = year, y = temp_diff)) +
   geom_bar(stat = "identity", width = 0.7, aes(fill = as.factor(year))) +
   geom_text(aes(label = round(temp_diff, 2), vjust = -0.5), size = 2.8)+
   labs(x = "Year",
@@ -234,4 +235,4 @@ diff_plot
 library(patchwork)
 mean_temps_plot + diff_plot
 ```
-Figure A above shows the difference in mean water temperature between August and December annually for 14 years since 2010 through 2023. The seasonal temperature difference ranges from a 12.47 deg C to a 15.42 deg C difference with a mean of 13.90 deg C difference between August and December. For conservation planning purposes, it is reasonable to estimate that the water temperature will decrease approximately 13-14 degrees between the summer and the winter this season. In addition, Figure B plots the water temperature difference over time. There are no clear outliers, and the distribution is relatively uniform over time. Therefore, it is expected that near-term seasonal water temperature decreases will follow a similar pattern. 
+Figure A above shows the difference in mean water temperature between August and December annually from 2010 through 2023. The seasonal temperature difference between August and December ranges from 12.47 deg C to 15.42 deg C, with a mean of 13.90 deg C difference. For conservation planning purposes, it is reasonable to estimate that the water temperature will decrease approximately 13-14 degrees between the summer and the winter this season. In addition, Figure B plots the water temperature difference over time. There are no clear outliers, and the distribution is relatively uniform. Therefore, it is expected that near-term seasonal water temperature decreases will follow a similar pattern. Even though the analysis of August and December data shows that the temperatures are increasing each year, they appear to be increasing at a consistent rate so that the seasonal change stays relatively constant. 
