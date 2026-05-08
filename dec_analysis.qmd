@@ -6,20 +6,98 @@ editor: visual
 ---
 
 ```{r}
+#| warning: false
+#| message: false
+
+library(janitor)
+library(tidyverse)
+library(here)
+library(jtools)
+library(knitr)
+library(kableExtra)
+library(janitor)
+library(geomtextpath)
+library(lubridate)
+```
+
+```{r}
+#| warning: false
 
 #load data
 temp_data <- read.csv("temp_data.csv")
-
-#GLM for predicting stream temperature in December
 temp_data$temp_C <- as.numeric(temp_data$temp_C)
 temp_data$year <- as.numeric(temp_data$year)
 # filter for dec temperatures
 dec_data <- subset(temp_data, month == "Dec")
-
-# fit a GLM model to see if there is a trend in dec temperatures over time, separated by site
-dec_model <- glm(temp_C ~ year*site_no, data = dec_data)
-summary(dec_model)
-
-
 ```
 
+## Part I: Analysis of December Water Temperatures
+
+### a) is there a trend in temperature in the month of December?
+
+```{r}
+# get data for Dec
+dec_data <- temp_data |> 
+  clean_names() |>
+  filter(month == "Dec")
+
+# is there a trend between year and temperature? Is the temperature changing over time?
+dec_lm <- lm(temp_c ~ year, data = dec_data)
+summ(dec_lm, digits = 4)
+```
+
+Yes, there is a significant positive relationship between the year and the water temperature in December. The p-value of the coefficient `year` is 0.0000 which is less than our alpha threshold of 0.05.
+
+#### b) Is the trend positive (increasing) or negative (decreasing)?
+
+```{r}
+dec_plot <- ggplot(dec_data, aes(x = year, y = temp_c, color = as.factor(year))) +
+  theme_bw() +
+  geom_jitter() +
+  geom_smooth(aes(group = 1),
+              method = "lm",
+              se = FALSE,
+              color = "black") +
+  labs(title = "December Recorded Water Temperature for all sites",
+       x = "Year",
+       y = "Temp (deg C)",
+       color = "Year")
+  
+dec_plot
+```
+
+Based on the plot above and the regression coefficient = 0.0549, the linear regression estimates that the December water temperature is increasing by 0.0549 degrees Celsius every year. However, this linear model has an R^2^ = 0.0203 and the figure shows clearly that the data is not obviously linear. Therefore, only 2% of the variation in temperature can be attributed to a difference in year, and year is not be the best variable to estimate or predict change in water temperature.
+
+#### c) Are there different trends in each site?
+
+```{r}
+
+# fit a GLM model to see if there is a trend in dec temperatures over time, separated by site
+dec_model <- glm(temp_c ~ year*site_no, data = dec_data)
+summary(dec_model)
+
+#plot the different site temperature trends
+dec_site_plot <- ggplot(dec_data, aes(x = year, 
+                                      y = temp_c, 
+                                      color = as.factor(site_no))) +
+  theme_bw() +
+  geom_point(size = 2, alpha = 0.5) + 
+  geom_labelsmooth(aes(label = site_no), 
+                   fill = "white",
+                method = "lm", 
+                formula = y ~ x,
+                size = 2.75, 
+                linewidth = 1, 
+                boxlinewidth = 0.4) +
+  labs(title = "December Water Temperature Trends Per Site",
+       x = "Year",
+       y = "Temp (degrees C)",
+       color = "Site") +
+  guides(color = 'none')
+
+dec_site_plot
+```
+
+**Yes**, there are differences in temperature trends between sites. At site 14211720, the linear model estimates that the water increases by 0.01501 degrees C per year. At site 14211010, the linear model estimates that the water increases by 0.03722 degrees C per year. At site 14166000, the linear model estimates that the water increases by 0.03756 degrees C per year. The figure above (*"December Water Temperature Trends Per Site"*) shows that each site has its own temperature trends. These results make sense, as each site likely has its own unique combination of upstream water flow, water depth, sun exposure, flow speed, et cetera. We could follow up this analysis with a Anova test to confirm that the differences in water temperature at the 14211720 is statistically different from the other two sites.
+
+***see quarto document titled 'hw-2-alecia.qmd' for management plot and analysis***
