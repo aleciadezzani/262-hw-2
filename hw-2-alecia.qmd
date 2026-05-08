@@ -236,3 +236,8 @@ library(patchwork)
 mean_temps_plot + diff_plot
 ```
 Figure A above shows the difference in mean water temperature between August and December annually from 2010 through 2023. The seasonal temperature difference between August and December ranges from 12.47 deg C to 15.42 deg C, with a mean of 13.90 deg C difference. For conservation planning purposes, it is reasonable to estimate that the water temperature will decrease approximately 13-14 degrees between the summer and the winter this season. In addition, Figure B plots the water temperature difference over time. There are no clear outliers, and the distribution is relatively uniform. Therefore, it is expected that near-term seasonal water temperature decreases will follow a similar pattern. Even though the analysis of August and December data shows that the temperatures are increasing each year, they appear to be increasing at a consistent rate so that the seasonal change stays relatively constant. 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> alecia
