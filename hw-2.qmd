@@ -19,11 +19,8 @@ library(here)
 library(ggplot2)
 library(jtools)
 library(knitr)
-<<<<<<< HEAD
 library(janitor)
-=======
 library(kableExtra)
->>>>>>> 7938775ae98741d9ab37ee4a55750abf187f09ae
 ```
 
 
@@ -50,7 +47,6 @@ library(dataRetrieval)
 #temp_data$month = month(temp_data$Date, label=TRUE)
 #temp_data$year = year(temp_data$Date)
 
-<<<<<<< HEAD
 #temp_data <- temp_data |> select(-5)          # remove column 5
 
 #save the dataframe
@@ -59,8 +55,6 @@ library(dataRetrieval)
 #local data load
 temp_data <- read.csv(here("temp_data.csv"))
 
-=======
->>>>>>> 7938775ae98741d9ab37ee4a55750abf187f09ae
 # check by plotting
 #ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
   #geom_line() +
@@ -69,17 +63,6 @@ temp_data <- read.csv(here("temp_data.csv"))
   #theme_minimal()
 ```
 
-<<<<<<< HEAD
-=======
-```{r}
-#save the dataframe
-#write_csv(temp_data, here("temp_data.csv"))
-
-#local data load
-temp_data <- read.csv(here("temp_data.csv"))
-```
-
->>>>>>> 7938775ae98741d9ab37ee4a55750abf187f09ae
 ```{r data plot}
 
 #2. Plot the data
